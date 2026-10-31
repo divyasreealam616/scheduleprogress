@@ -1,0 +1,251 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Interview Prep Tracker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: single column tracker. Hero progress, today card, week-by-week grid, then expandable weeks. */
+:root{
+  --bg:#FBF8F3; --surface:#FFFFFF; --ink:#1B1A2E; --mute:#6B6880; --line:#E9E4DC; --accent:#4338CA; --accent-ink:#fff; --good:#16A34A; --warn:#D97706;
+  --display:'Bricolage Grotesque','DM Sans',system-ui,sans-serif; --body:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#13121C;--surface:#1C1B29;--ink:#F1EFFA;--mute:#A09DB8;--line:#2E2C40;--accent:#8B85FF;--accent-ink:#13121C;--good:#4ADE80;--warn:#FBBF24;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#13121C;--surface:#1C1B29;--ink:#F1EFFA;--mute:#A09DB8;--line:#2E2C40;--accent:#8B85FF;--accent-ink:#13121C;--good:#4ADE80;--warn:#FBBF24;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+
+.hero{background:var(--accent);color:var(--accent-ink);border-radius:24px;padding:22px;display:grid;gap:18px}
+.hero h1{font-size:clamp(26px,6vw,38px);line-height:1.05;font-weight:800}
+.hero .eyebrow{color:inherit;opacity:.8}
+.pct{display:flex;align-items:baseline;gap:8px}
+.pct b{font-family:var(--display);font-size:64px;line-height:1;font-weight:800;font-variant-numeric:tabular-nums}
+.pct span{opacity:.85}
+.bar{height:12px;border-radius:12px;background:color-mix(in srgb,var(--accent-ink) 25%,transparent);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent-ink);border-radius:12px;transition:width .5s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:color-mix(in srgb,var(--accent-ink) 14%,transparent);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.stat small{font-size:11.5px;opacity:.85}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px}
+.today{display:grid;gap:12px}
+.today h2{font-size:21px;font-weight:700}
+.today .pr{color:var(--mute)}
+.today .pr:before{content:'Practice: ';font-weight:700;color:var(--ink)}
+.chip{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:99px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--surface))}
+.bigtick{justify-self:start;display:flex;align-items:center;gap:10px;border:2px solid var(--c);background:var(--surface);border-radius:14px;padding:10px 16px;font-weight:700;color:var(--c)}
+.bigtick[aria-checked=true]{background:var(--c);color:#fff}
+
+.sec h2{font-size:20px;font-weight:800;margin-bottom:12px}
+.sec .sub{color:var(--mute);font-size:13.5px;margin:-6px 0 12px}
+.map{display:grid;gap:5px}
+.mrow{display:grid;grid-template-columns:34px repeat(7,1fr);gap:5px;align-items:center}
+.mrow>b{font-size:11.5px;color:var(--mute);font-weight:700}
+.sq{aspect-ratio:1.25;border-radius:8px;border:1.5px solid color-mix(in srgb,var(--c) 45%,var(--surface));background:color-mix(in srgb,var(--c) 10%,var(--surface));font-size:10.5px;font-weight:700;color:var(--c);padding:0;min-width:0}
+.sq.on{background:var(--c);color:#fff;border-color:var(--c)}
+.sq.now{box-shadow:0 0 0 2.5px var(--bg),0 0 0 4.5px var(--ink)}
+.dow{display:grid;grid-template-columns:34px repeat(7,1fr);gap:5px;font-size:10.5px;color:var(--mute);text-align:center;font-weight:700;margin-bottom:5px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:12px;color:var(--mute)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:5px}
+
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.bd{text-align:center;font-size:11.5px;font-weight:700;color:var(--mute)}
+.bd .c{width:56px;height:56px;margin:0 auto 4px;border-radius:50%;display:grid;place-items:center;font-size:26px;border:2px dashed var(--line);filter:grayscale(1);opacity:.5}
+.bd.on{color:var(--ink)}
+.bd.on .c{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 16%,var(--surface));filter:none;opacity:1}
+
+.weeks{display:flex;flex-direction:column;gap:10px}
+.wk{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.wh{width:100%;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;text-align:left;background:none;border:0;padding:12px 14px}
+.wh .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:color-mix(in srgb,var(--c) 16%,var(--surface))}
+.wh small{display:block;font-size:11.5px;font-weight:700;letter-spacing:.08em;color:var(--c);text-transform:uppercase}
+.wh strong{font-family:var(--display);font-size:16.5px;line-height:1.2}
+.wh .cnt{font-size:13px;font-weight:700;color:var(--mute);font-variant-numeric:tabular-nums;text-align:right}
+.wk .mini{height:4px;background:color-mix(in srgb,var(--c) 14%,var(--surface))}
+.wk .mini i{display:block;height:100%;background:var(--c);transition:width .4s}
+.wk.full .cnt{color:var(--good)}
+.rows{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);align-items:start}
+.row:last-child{border-bottom:0}
+.row.cp{background:color-mix(in srgb,var(--c) 7%,var(--surface))}
+.row.now{box-shadow:inset 4px 0 0 var(--c)}
+.tick{width:30px;height:30px;border-radius:50%;border:2px solid var(--c);background:var(--surface);display:grid;place-items:center;padding:0;color:#fff}
+.tick svg{width:16px;height:16px;opacity:0;transition:opacity .15s}
+.tick[aria-checked=true]{background:var(--c)}
+.tick[aria-checked=true] svg{opacity:1}
+.row .d{font-size:12px;font-weight:700;color:var(--mute)}
+.row .t{font-weight:700}
+.row .p{color:var(--mute);font-size:14px;margin-top:2px}
+.row.done .t{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--c) 60%,transparent);color:var(--mute)}
+.cpt{font-size:10.5px;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:99px;background:var(--c);color:#fff;margin-left:6px;vertical-align:1px}
+
+.ck{display:grid;gap:8px}
+.ci{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start;padding:10px 4px;border-bottom:1px solid var(--line)}
+.ci:last-child{border-bottom:0}
+.ci b{color:var(--c)}
+.ci p{margin:2px 0 0;color:var(--mute);font-size:14px}
+.ci.done p{text-decoration:line-through}
+.advice{background:var(--ink);color:var(--bg);border-radius:20px;padding:20px}
+.advice h3{font-size:18px;margin-bottom:6px}
+.advice p{margin:0;opacity:.9}
+.foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;color:var(--mute);font-size:13px}
+.ghost{background:none;border:1px solid var(--line);border-radius:10px;padding:7px 12px;color:var(--mute)}
+.ghost.danger{border-color:var(--warn);color:var(--warn)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:700;opacity:0;pointer-events:none;transition:.3s;z-index:20;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:420px){.pct b{font-size:52px}.hero{padding:18px}.mrow,.dow{grid-template-columns:28px repeat(7,1fr)}}
+</style>
+
+<div class="wrap" id="app" aria-live="polite"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const DATA = {"tracks": {"java": ["Java", "#F97316"], "oop": ["OOP", "#EA580C"], "dsa": ["DSA", "#EAB308"], "sql": ["SQL & DBMS", "#2563EB"], "py": ["Python & Pandas", "#16A34A"], "stat": ["Statistics", "#7C3AED"], "bi": ["Excel & Power BI", "#0D9488"], "ml": ["Machine Learning", "#DB2777"], "proj": ["Projects", "#DC2626"], "int": ["Interview Prep", "#4F46E5"]}, "weeks": [{"label": "Week 1", "sub": "Java foundations + preparation setup", "emoji": "☕", "badge": "Java Rookie", "days": [{"n": 1, "date": "2026-11-01", "topic": "Java overview: JDK, JRE, JVM; compile vs run; program structure", "practice": "Install/check JDK and IDE; write and run 3 simple programs.", "track": "java", "chk": false}, {"n": 2, "date": "2026-11-02", "topic": "Variables, primitive data types, literals and type casting", "practice": "Write programs using all primitive types; practice widening/narrowing.", "track": "java", "chk": false}, {"n": 3, "date": "2026-11-03", "topic": "Operators, expressions, precedence and control flow", "practice": "Solve 8 problems using if/else, switch and loops.", "track": "java", "chk": false}, {"n": 4, "date": "2026-11-04", "topic": "Loops: for, while, do-while; break and continue", "practice": "Pattern printing and number-based problems; trace each loop.", "track": "java", "chk": false}, {"n": 5, "date": "2026-11-05", "topic": "Methods, parameters, return values, method overloading", "practice": "Write 6 small methods; explain call stack in your own words.", "track": "java", "chk": false}, {"n": 6, "date": "2026-11-06", "topic": "Arrays: declaration, traversal, insertion, deletion, searching", "practice": "Solve 5 array problems; dry-run indices on paper.", "track": "java", "chk": false}, {"n": 7, "date": "2026-11-07", "topic": "Weekly revision + mini test", "practice": "Revise Days 1–6; 20-question Java quiz; explain 2 programs aloud.", "track": "java", "chk": true}]}, {"label": "Week 2", "sub": "Object-oriented programming in Java", "emoji": "🧱", "badge": "Object Builder", "days": [{"n": 8, "date": "2026-11-08", "topic": "Classes, objects, fields, methods and constructors", "practice": "Build a Student class; create objects and call methods.", "track": "oop", "chk": false}, {"n": 9, "date": "2026-11-09", "topic": "this keyword, constructor overloading and initialization", "practice": "Write a class with multiple constructors; trace this.", "track": "oop", "chk": false}, {"n": 10, "date": "2026-11-10", "topic": "Encapsulation, access modifiers and getters/setters", "practice": "Design an encapsulated BankAccount class.", "track": "oop", "chk": false}, {"n": 11, "date": "2026-11-11", "topic": "Inheritance: types, super keyword and constructor chaining", "practice": "Create a small inheritance hierarchy; practice 4 examples.", "track": "oop", "chk": false}, {"n": 12, "date": "2026-11-12", "topic": "Polymorphism: overloading vs overriding; dynamic binding", "practice": "Code examples and predict output before running.", "track": "oop", "chk": false}, {"n": 13, "date": "2026-11-13", "topic": "Abstraction: abstract classes vs interfaces", "practice": "Model payment methods using an interface and abstract class.", "track": "oop", "chk": false}, {"n": 14, "date": "2026-11-14", "topic": "Revision + OOP interview practice", "practice": "Answer 15 OOP questions; explain one real example from RoadCare AI.", "track": "oop", "chk": true}]}, {"label": "Week 3", "sub": "Java essentials + DSA foundations", "emoji": "🧰", "badge": "Collections Climber", "days": [{"n": 15, "date": "2026-11-15", "topic": "static, final, packages and imports", "practice": "Write examples; compare instance and class members.", "track": "java", "chk": false}, {"n": 16, "date": "2026-11-16", "topic": "Strings, String pool, StringBuilder and StringBuffer", "practice": "Solve 6 string problems; compare immutable/mutable behavior.", "track": "java", "chk": false}, {"n": 17, "date": "2026-11-17", "topic": "Exception handling: try, catch, finally, throw, throws", "practice": "Handle invalid input and file/process errors.", "track": "java", "chk": false}, {"n": 18, "date": "2026-11-18", "topic": "Collections overview: List, Set, Map; ArrayList and LinkedList", "practice": "Choose structures for 5 scenarios; implement examples.", "track": "dsa", "chk": false}, {"n": 19, "date": "2026-11-19", "topic": "HashMap, HashSet, equals() and hashCode()", "practice": "Frequency counting and duplicate detection problems.", "track": "dsa", "chk": false}, {"n": 20, "date": "2026-11-20", "topic": "Time and space complexity; Big-O basics", "practice": "Analyze 10 short code snippets.", "track": "dsa", "chk": false}, {"n": 21, "date": "2026-11-21", "topic": "Revision + coding assessment", "practice": "Solve 5 easy Java/DSA problems under a relaxed time limit.", "track": "dsa", "chk": true}]}, {"label": "Week 4", "sub": "Core DSA: searching, sorting and recursion", "emoji": "🧠", "badge": "Algorithm Apprentice", "days": [{"n": 22, "date": "2026-11-22", "topic": "Arrays: two pointers and sliding window basics", "practice": "Solve Two Sum, Contains Duplicate and Valid Palindrome.", "track": "dsa", "chk": false}, {"n": 23, "date": "2026-11-23", "topic": "Binary search: iterative, recursive and boundary patterns", "practice": "Solve 5 binary-search problems; dry-run edge cases.", "track": "dsa", "chk": false}, {"n": 24, "date": "2026-11-24", "topic": "Sorting: bubble, selection, insertion; stability and complexity", "practice": "Implement each sort and compare operation counts.", "track": "dsa", "chk": false}, {"n": 25, "date": "2026-11-25", "topic": "Merge sort and quicksort", "practice": "Implement both; trace partition/merge steps.", "track": "dsa", "chk": false}, {"n": 26, "date": "2026-11-26", "topic": "Recursion: base case, recursive case and call stack", "practice": "Solve factorial, sum, reverse string and array recursion.", "track": "dsa", "chk": false}, {"n": 27, "date": "2026-11-27", "topic": "Linked lists: nodes, traversal, insertion and deletion", "practice": "Implement singly linked list operations.", "track": "dsa", "chk": false}, {"n": 28, "date": "2026-11-28", "topic": "Month 1 review + checkpoint", "practice": "Java/OOP/DSA test; revise weak topics; update a mistake notebook.", "track": "dsa", "chk": true}]}, {"label": "Week 5", "sub": "SQL foundations", "emoji": "🗄️", "badge": "Query Starter", "days": [{"n": 29, "date": "2026-11-29", "topic": "Databases, relational model, tables, rows, keys and constraints", "practice": "Create sample Students, Courses and Enrollments tables.", "track": "sql", "chk": false}, {"n": 30, "date": "2026-11-30", "topic": "SELECT, DISTINCT, WHERE, ORDER BY, LIMIT", "practice": "Write 15 basic queries on a practice dataset.", "track": "sql", "chk": false}, {"n": 31, "date": "2026-12-01", "topic": "Operators: AND, OR, NOT, IN, BETWEEN, LIKE, NULL", "practice": "Write 12 filtering queries; practice NULL behavior.", "track": "sql", "chk": false}, {"n": 32, "date": "2026-12-02", "topic": "Aggregate functions: COUNT, SUM, AVG, MIN, MAX", "practice": "Answer business questions using aggregates.", "track": "sql", "chk": false}, {"n": 33, "date": "2026-12-03", "topic": "GROUP BY and HAVING", "practice": "Solve 12 grouping questions; explain WHERE vs HAVING.", "track": "sql", "chk": false}, {"n": 34, "date": "2026-12-04", "topic": "Joins: INNER, LEFT, RIGHT, FULL; self join", "practice": "Practice joins across 3 related tables.", "track": "sql", "chk": false}, {"n": 35, "date": "2026-12-05", "topic": "SQL revision + quiz", "practice": "Solve 20 mixed SQL questions without notes.", "track": "sql", "chk": true}]}, {"label": "Week 6", "sub": "SQL intermediate + DBMS", "emoji": "🔗", "badge": "Join Master", "days": [{"n": 36, "date": "2026-12-06", "topic": "Subqueries: scalar, multi-row and correlated basics", "practice": "Solve 8 subquery problems.", "track": "sql", "chk": false}, {"n": 37, "date": "2026-12-07", "topic": "UNION vs UNION ALL; set operations", "practice": "Combine query results and explain duplicate handling.", "track": "sql", "chk": false}, {"n": 38, "date": "2026-12-08", "topic": "CASE expressions, COALESCE and NULL handling", "practice": "Create categories and handle missing values.", "track": "sql", "chk": false}, {"n": 39, "date": "2026-12-09", "topic": "CTEs and introductory window functions", "practice": "Use ROW_NUMBER, RANK and DENSE_RANK.", "track": "sql", "chk": false}, {"n": 40, "date": "2026-12-10", "topic": "Window aggregates: PARTITION BY, running totals", "practice": "Solve 6 ranking and analytics questions.", "track": "sql", "chk": false}, {"n": 41, "date": "2026-12-11", "topic": "DBMS: normalization, 1NF/2NF/3NF, anomalies", "practice": "Normalize a sample table; explain trade-offs.", "track": "sql", "chk": false}, {"n": 42, "date": "2026-12-12", "topic": "Revision + SQL mini assessment", "practice": "Complete 25 SQL questions; review every incorrect answer.", "track": "sql", "chk": true}]}, {"label": "Week 7", "sub": "Python for data work", "emoji": "🐍", "badge": "Python Charmer", "days": [{"n": 43, "date": "2026-12-13", "topic": "Python setup, syntax, variables, data types and input/output", "practice": "Write 8 small programs; compare Python and Java syntax.", "track": "py", "chk": false}, {"n": 44, "date": "2026-12-14", "topic": "Conditions, loops, range and comprehensions", "practice": "Solve 10 beginner problems.", "track": "py", "chk": false}, {"n": 45, "date": "2026-12-15", "topic": "Strings, lists, tuples, sets and dictionaries", "practice": "Practice transformations and frequency counting.", "track": "py", "chk": false}, {"n": 46, "date": "2026-12-16", "topic": "Functions, arguments, scope and lambda", "practice": "Write reusable data-cleaning functions.", "track": "py", "chk": false}, {"n": 47, "date": "2026-12-17", "topic": "Exception handling, modules and file handling", "practice": "Read/write CSV and text files; handle missing file errors.", "track": "py", "chk": false}, {"n": 48, "date": "2026-12-18", "topic": "NumPy: arrays, shape, indexing, slicing and vectorization", "practice": "Create arrays; compare vectorized and loop calculations.", "track": "py", "chk": false}, {"n": 49, "date": "2026-12-19", "topic": "Revision + Python coding practice", "practice": "Solve 8 problems; explain dictionary/list use cases.", "track": "py", "chk": true}]}, {"label": "Week 8", "sub": "Pandas, data cleaning and EDA", "emoji": "🐼", "badge": "Data Wrangler", "days": [{"n": 50, "date": "2026-12-20", "topic": "Pandas Series/DataFrame; read_csv and inspect data", "practice": "Load a dataset; use head, tail, info, describe and shape.", "track": "py", "chk": false}, {"n": 51, "date": "2026-12-21", "topic": "Selecting, filtering, sorting and indexing", "practice": "Answer 10 questions from a dataset.", "track": "py", "chk": false}, {"n": 52, "date": "2026-12-22", "topic": "Missing values, duplicates, data types and outliers", "practice": "Clean a messy dataset; document each decision.", "track": "py", "chk": false}, {"n": 53, "date": "2026-12-23", "topic": "GroupBy, aggregation, merge, join and concat", "practice": "Create grouped summaries and combine two datasets.", "track": "py", "chk": false}, {"n": 54, "date": "2026-12-24", "topic": "Exploratory Data Analysis workflow and question framing", "practice": "Write 5 questions before analyzing a dataset.", "track": "py", "chk": false}, {"n": 55, "date": "2026-12-25", "topic": "Matplotlib and Seaborn: charts and choosing visuals", "practice": "Build histogram, boxplot, bar, scatter and line charts.", "track": "py", "chk": false}, {"n": 56, "date": "2026-12-26", "topic": "Month 2 review + practical checkpoint", "practice": "Clean and analyze one dataset; present 5 findings.", "track": "py", "chk": true}]}, {"label": "Week 9", "sub": "Statistics and probability", "emoji": "🎲", "badge": "Stats Sage", "days": [{"n": 57, "date": "2026-12-27", "topic": "Descriptive statistics: mean, median, mode, variance, SD", "practice": "Calculate measures manually and with Python.", "track": "stat", "chk": false}, {"n": 58, "date": "2026-12-28", "topic": "Percentiles, quartiles, IQR and outlier interpretation", "practice": "Analyze distributions and explain outliers.", "track": "stat", "chk": false}, {"n": 59, "date": "2026-12-29", "topic": "Probability basics, events, independence and conditional probability", "practice": "Solve 12 probability questions.", "track": "stat", "chk": false}, {"n": 60, "date": "2026-12-30", "topic": "Bayes' theorem and common probability distributions", "practice": "Practice conditional probability; understand normal/binomial.", "track": "stat", "chk": false}, {"n": 61, "date": "2026-12-31", "topic": "Sampling, population, bias and Central Limit Theorem", "practice": "Explain sampling scenarios and CLT intuitively.", "track": "stat", "chk": false}, {"n": 62, "date": "2027-01-01", "topic": "Confidence intervals and hypothesis testing", "practice": "Understand null/alternative hypotheses, p-value and errors.", "track": "stat", "chk": false}, {"n": 63, "date": "2027-01-02", "topic": "Statistics revision + interpretation test", "practice": "Interpret charts and statistical results in plain language.", "track": "stat", "chk": true}]}, {"label": "Week 10", "sub": "Data analytics + Power BI", "emoji": "📊", "badge": "Dashboard Designer", "days": [{"n": 64, "date": "2027-01-03", "topic": "Analytics workflow: business question → data → insight → action", "practice": "Turn 5 vague questions into measurable questions.", "track": "bi", "chk": false}, {"n": 65, "date": "2027-01-04", "topic": "Excel essentials: formulas, sorting, filtering and tables", "practice": "Practice IF, SUMIF(S), COUNTIF(S), XLOOKUP and text/date functions.", "track": "bi", "chk": false}, {"n": 66, "date": "2027-01-05", "topic": "Pivot tables, charts and data validation", "practice": "Build a pivot-based summary from a sample dataset.", "track": "bi", "chk": false}, {"n": 67, "date": "2027-01-06", "topic": "Power Query: import, clean, transform and data types", "practice": "Recreate cleaning steps from your airline project.", "track": "bi", "chk": false}, {"n": 68, "date": "2027-01-07", "topic": "Power BI data model, relationships and star schema basics", "practice": "Model fact and dimension tables.", "track": "bi", "chk": false}, {"n": 69, "date": "2027-01-08", "topic": "DAX fundamentals: measures, calculated columns, CALCULATE basics", "practice": "Create total, average, count and percentage measures.", "track": "bi", "chk": false}, {"n": 70, "date": "2027-01-09", "topic": "Dashboard storytelling + review", "practice": "Explain airline dashboard insights, visuals and design choices.", "track": "bi", "chk": true}]}, {"label": "Week 11", "sub": "Machine learning foundations", "emoji": "🤖", "badge": "ML Explorer", "days": [{"n": 71, "date": "2027-01-10", "topic": "AI vs ML vs deep learning; supervised vs unsupervised learning", "practice": "Classify real-world tasks by learning type.", "track": "ml", "chk": false}, {"n": 72, "date": "2027-01-11", "topic": "ML workflow: problem framing, features, labels and train/test split", "practice": "Build a simple sklearn workflow.", "track": "ml", "chk": true}, {"n": 73, "date": "2027-01-12", "topic": "Linear regression: intuition, assumptions and evaluation", "practice": "Fit a model; interpret coefficients and MAE/RMSE.", "track": "ml", "chk": false}, {"n": 74, "date": "2027-01-13", "topic": "Logistic regression and classification probabilities", "practice": "Train a binary classifier; interpret output.", "track": "ml", "chk": false}, {"n": 75, "date": "2027-01-14", "topic": "Decision trees and random forests", "practice": "Train models; understand splits, depth and feature importance.", "track": "ml", "chk": false}, {"n": 76, "date": "2027-01-15", "topic": "Overfitting, underfitting, bias-variance and cross-validation", "practice": "Compare train/test scores; identify leakage risks.", "track": "ml", "chk": false}, {"n": 77, "date": "2027-01-16", "topic": "ML revision + model explanation", "practice": "Explain the end-to-end workflow without relying on code.", "track": "ml", "chk": true}]}, {"label": "Week 12", "sub": "ML evaluation + resume projects", "emoji": "🚀", "badge": "Model Whisperer", "days": [{"n": 78, "date": "2027-01-17", "topic": "Classification metrics: confusion matrix, precision, recall, F1", "practice": "Calculate metrics; choose based on business costs.", "track": "ml", "chk": false}, {"n": 79, "date": "2027-01-18", "topic": "ROC-AUC, threshold tuning and class imbalance", "practice": "Compare thresholds; understand precision-recall trade-off.", "track": "ml", "chk": false}, {"n": 80, "date": "2027-01-19", "topic": "Clustering: K-means, scaling and choosing K", "practice": "Cluster a small dataset and interpret segments.", "track": "ml", "chk": false}, {"n": 81, "date": "2027-01-20", "topic": "Feature engineering, encoding, scaling and pipelines", "practice": "Build preprocessing with sklearn Pipeline/ColumnTransformer.", "track": "ml", "chk": false}, {"n": 82, "date": "2027-01-21", "topic": "RoadCare AI: architecture and end-to-end workflow", "practice": "Explain JavaFX → ProcessBuilder → Python/YOLO → JSON → Gson → report/history.", "track": "proj", "chk": false}, {"n": 83, "date": "2027-01-22", "topic": "RoadCare AI: design decisions, testing and failure handling", "practice": "Prepare answers on malformed JSON, confidence, severity rules and limitations.", "track": "proj", "chk": false}, {"n": 84, "date": "2027-01-23", "topic": "Airline dashboard: dataset, cleaning, DAX/visuals and insights", "practice": "Prepare a 2-minute walkthrough; verify every resume claim.", "track": "proj", "chk": false}]}, {"label": "Week 13", "sub": "Interview readiness + final consolidation", "emoji": "🎯", "badge": "Interview Ready", "days": [{"n": 85, "date": "2027-01-24", "topic": "Java + OOP interview revision", "practice": "Answer 25 questions aloud; solve 2 coding problems.", "track": "int", "chk": true}, {"n": 86, "date": "2027-01-25", "topic": "DSA mixed practice: arrays, strings, hash maps, binary search", "practice": "Solve 4 problems; explain complexity and edge cases.", "track": "int", "chk": false}, {"n": 87, "date": "2027-01-26", "topic": "SQL interview set: joins, grouping, subqueries, windows", "practice": "Solve 15 mixed questions; explain query logic.", "track": "int", "chk": false}, {"n": 88, "date": "2027-01-27", "topic": "Python/Pandas + statistics interview revision", "practice": "Perform a short EDA task and explain findings.", "track": "int", "chk": true}, {"n": 89, "date": "2027-01-28", "topic": "Data Analyst/Data Science case questions", "practice": "Practice KPI, data quality, experiment and model-choice scenarios.", "track": "int", "chk": false}, {"n": 90, "date": "2027-01-29", "topic": "HR and behavioral: introduction, strengths, teamwork, setbacks", "practice": "Prepare STAR stories; practice a 60–90 second introduction.", "track": "int", "chk": false}, {"n": 91, "date": "2027-01-30", "topic": "Final mock interview + next-step plan", "practice": "Run a full mock; list remaining gaps and plan continued practice.", "track": "int", "chk": true}]}, {"label": "Final buffer", "sub": "Placement readiness", "emoji": "🏁", "badge": "Placement Ready", "days": [{"n": 92, "date": "2027-01-31", "topic": "Consolidation, applications and sustainable continuation", "practice": "Review your mistake notebook; polish resume/project links; apply to suitable fresher roles; set a weekly interview-practice routine.", "track": "int", "chk": false}]}], "checklist": [["java", "Java & DSA", "Explain OOP pillars, collections, exceptions, strings, complexity; solve arrays, strings, hash maps, binary search and linked-list problems."], ["sql", "SQL & DBMS", "Write joins, GROUP BY/HAVING, subqueries, CTEs and window functions; explain keys, normalization and transactions."], ["py", "Python & analytics", "Use Pandas to inspect, clean, transform, group and merge data; select appropriate charts and communicate findings."], ["stat", "Statistics", "Explain distributions, sampling, probability, hypothesis tests, p-values, confidence intervals and correlation vs causation."], ["bi", "Power BI", "Explain Power Query steps, data model, measures vs calculated columns, DAX and dashboard design choices."], ["ml", "Machine learning", "Explain train/test split, leakage, regression/classification, overfitting, cross-validation and evaluation metrics."], ["proj", "RoadCare AI", "Explain architecture, your exact contribution, YOLO output, confidence, JSON parsing, rule-based severity/cost, report generation, testing and limitations."], ["bi", "Airline dashboard", "Explain dataset source, cleaning decisions, analysis questions, visuals, insights and what you would improve."], ["int", "HR & communication", "Prepare introduction, why this role, teamwork/conflict, challenge, failure, learning, strengths and questions for the interviewer."]]};
+const T = DATA.tracks;
+const DAYS = []; DATA.weeks.forEach((w,wi)=>w.days.forEach(d=>DAYS.push({...d,wi})));
+const TOTAL = DAYS.length;
+const tc = k => T[k][1];
+const CK = '✓';
+const TICK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>';
+
+let state = {done:{}, ck:{}};
+let open = new Set(), openAll = false, confirmReset = false, syncMode = 'local';
+let dirty = false, docRef = null, saveTimer = null, saving = Promise.resolve();
+
+// ---- dates (local calendar days)
+const START = new Date(2026,10,1);
+function todayIdx(){ const n=new Date(); const t=new Date(n.getFullYear(),n.getMonth(),n.getDate()); return Math.round((t-START)/864e5); }
+const fmtDay = s => { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}); };
+
+// ---- storage
+function localLoad(){ try{ const s=localStorage.getItem('ipt-v1'); if(s) return JSON.parse(s);}catch(e){} return null; }
+function localSave(){ try{ localStorage.setItem('ipt-v1',JSON.stringify(state)); }catch(e){} }
+function queueSave(){
+  localSave(); dirty = true; clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{ saving = saving.then(async()=>{
+    if(!docRef){ dirty=false; return; }
+    try{ await docRef.set({done:state.done, ck:state.ck, updated:Date.now()}); }catch(e){ syncMode='local'; }
+    dirty = false; render();
+  }); }, 400);
+}
+
+// ---- derived
+const isDone = n => !!state.done[n];
+function weekCount(wi){ const w=DATA.weeks[wi]; return w.days.filter(d=>isDone(d.n)).length; }
+function doneTotal(){ return DAYS.filter(d=>isDone(d.n)).length; }
+function streak(){
+  let i=Math.min(todayIdx(),TOTAL-1); if(i<0) return 0;
+  if(!isDone(DAYS[i].n)) i--;
+  let s=0; while(i>=0 && isDone(DAYS[i].n)){ s++; i--; } return s;
+}
+function currentWeek(){ const i=todayIdx(); if(i<0) return 0; if(i>=TOTAL) return DATA.weeks.length-1; return DAYS[i].wi; }
+
+function toggle(n){
+  const wi = DAYS[n-1].wi, before = weekCount(wi)===DATA.weeks[wi].days.length;
+  state.done[n] = !state.done[n]; if(!state.done[n]) delete state.done[n];
+  const after = weekCount(wi)===DATA.weeks[wi].days.length;
+  render(); queueSave();
+  if(!before && after) toast('🏅 Badge unlocked: '+DATA.weeks[wi].badge);
+  else if(doneTotal()===TOTAL) toast('🏆 All 92 days done. You are ready.');
+}
+function toggleCk(i){ state.ck[i]=!state.ck[i]; if(!state.ck[i]) delete state.ck[i]; render(); queueSave(); }
+let tt; function toast(m){ const e=document.getElementById('toast'); e.textContent=m; e.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('show'),3200); }
+
+// ---- render
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function tickBtn(n,c,label){ return `<button class="tick" style="--c:${c}" role="checkbox" aria-checked="${isDone(n)}" aria-label="${esc(label)}" data-n="${n}">${TICK}</button>`; }
+
+function render(){
+  const done=doneTotal(), pct=Math.round(done/TOTAL*100), ti=todayIdx(), cw=currentWeek();
+  let pace='';
+  if(ti<0) pace = `Starts in ${-ti} day${-ti>1?'s':''}`;
+  else if(ti>=TOTAL) pace = 'Plan complete window';
+  else { const exp=ti, diff=done-exp; pace = diff>=0 ? (diff>0?`${diff} ahead`:'On pace') : `${-diff} behind`; }
+  const dayNo = ti<0 ? 'Starts 1 Nov' : ti>=TOTAL ? 'Final stretch' : `Day ${ti+1} of ${TOTAL}`;
+
+  let h = `<section class="hero"><div><div class="eyebrow">1 Nov 2026 – 31 Jan 2027 · ${dayNo}</div><h1>Interview prep, one tick at a time</h1></div>
+   <div><div class="pct"><b>${pct}%</b><span>${done} of ${TOTAL} days complete</span></div><div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div></div>
+   <div class="stats"><div class="stat"><b>${streak()}</b><small>day streak</small></div><div class="stat"><b>${DATA.weeks.filter((w,i)=>weekCount(i)===w.days.length).length}/${DATA.weeks.length}</b><small>weeks finished</small></div><div class="stat"><b>${pace}</b><small>vs. schedule</small></div></div></section>`;
+
+  // today
+  const tIdx = Math.max(0,Math.min(ti,TOTAL-1)); const td = DAYS[tIdx];
+  const label = ti<0 ? 'Up first' : ti>=TOTAL ? 'Last day on the plan' : 'Today';
+  h += `<section class="card today" style="--c:${tc(td.track)}"><div class="eyebrow">${label} · ${fmtDay(td.date)}</div>
+   <div><span class="chip" style="--c:${tc(td.track)}">${esc(T[td.track][0])}</span></div>
+   <h2>${esc(td.topic)}</h2><div class="pr">${esc(td.practice)}</div>
+   <button class="bigtick" style="--c:${tc(td.track)}" role="checkbox" aria-checked="${isDone(td.n)}" data-n="${td.n}">${isDone(td.n)?'✓ Done. Nice work':'Mark day '+td.n+' as done'}</button></section>`;
+
+  // map
+  h += `<section class="card sec"><h2>Your 92-day grid</h2><div class="sub">Tap a square to jump to that day. Filled means done. The ringed square is today.</div><div class="dow"><span></span>${['S','M','T','W','T','F','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="map">`;
+  DATA.weeks.forEach((w,wi)=>{
+    const lead = wi===0?0:0; // every week starts on Sunday
+    h += `<div class="mrow"><b>${wi===13?'Buf':'W'+(wi+1)}</b>`;
+    w.days.forEach(d=>{ h+=`<button class="sq${isDone(d.n)?' on':''}${d.n-1===ti?' now':''}" style="--c:${tc(d.track)}" data-jump="${d.n}" aria-label="Day ${d.n}, ${fmtDay(d.date)}${isDone(d.n)?', done':''}">${d.date.slice(8).replace(/^0/,'')}</button>`; });
+    h += `</div>`;
+  });
+  h += `</div><div class="legend">${Object.entries(T).map(([k,v])=>`<span><i style="--c:${v[1]}"></i>${esc(v[0])}</span>`).join('')}</div></section>`;
+
+  // badges
+  h += `<section class="card sec"><h2>Badges</h2><div class="badges">${DATA.weeks.map((w,wi)=>{const on=weekCount(wi)===w.days.length; return `<div class="bd${on?' on':''}" style="--c:${tc(w.days[0].track)}"><div class="c">${w.emoji}</div>${esc(w.badge)}</div>`;}).join('')}</div></section>`;
+
+  // weeks
+  h += `<section class="sec"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px"><h2 style="margin:0">Week by week</h2><button class="ghost" data-expand>${openAll?'Collapse all':'Expand all'}</button></div><div class="weeks">`;
+  DATA.weeks.forEach((w,wi)=>{
+    const c=weekCount(wi), n=w.days.length, full=c===n, col=tc(w.days[0].track);
+    const isOpen = openAll || open.has(wi);
+    const d0=fmtDay(w.days[0].date), d1=fmtDay(w.days[n-1].date);
+    h += `<div class="wk${full?' full':''}" style="--c:${col}" id="wk${wi}"><button class="wh" data-wk="${wi}" aria-expanded="${isOpen}"><div class="ic">${w.emoji}</div><div><small>${esc(w.label)} · ${n>1?d0.replace(/^\w+, /,'')+' – '+d1.replace(/^\w+, /,''):d0}</small><strong>${esc(w.sub)}</strong></div><div class="cnt">${full?'✓ ':''}${c}/${n}</div></button><div class="mini"><i style="width:${c/n*100}%"></i></div>`;
+    if(isOpen){ h += `<div class="rows">`+w.days.map(d=>{ const col2=tc(d.track);
+      return `<div class="row${d.chk?' cp':''}${isDone(d.n)?' done':''}${d.n-1===ti?' now':''}" style="--c:${col2}" id="day${d.n}">${tickBtn(d.n,col2,'Mark '+d.topic+' done')}<div><div class="d">${fmtDay(d.date)} · Day ${d.n}</div><div class="t">${esc(d.topic)}${d.chk?'<span class="cpt">CHECKPOINT</span>':''}</div><div class="p">${esc(d.practice)}</div></div></div>`; }).join('')+`</div>`; }
+    h += `</div>`;
+  });
+  h += `</div></section>`;
+
+  // checklist
+  const ckDone = DATA.checklist.filter((c,i)=>state.ck[i]).length;
+  h += `<section class="card sec"><h2>Interview checklist <span style="font-size:14px;color:var(--mute);font-weight:500;font-family:var(--body)">${ckDone}/${DATA.checklist.length}</span></h2><div class="sub">Tick each one when you can explain it out loud in your own words.</div><div class="ck">${DATA.checklist.map((c,i)=>{const col=tc(c[0]);return `<div class="ci${state.ck[i]?' done':''}" style="--c:${col}"><button class="tick" style="--c:${col}" role="checkbox" aria-checked="${!!state.ck[i]}" aria-label="${esc(c[1])}" data-ck="${i}">${TICK}</button><div><b>${esc(c[1])}</b><p>${esc(c[2])}</p></div></div>`;}).join('')}</div></section>`;
+  h += `<section class="advice"><h3>Final advice</h3><p>For fresher roles, interviewers usually look for clear fundamentals, problem-solving, honest ownership of your projects and the ability to explain your thinking. Do not claim tools or results you cannot confidently explain. Consistent practice and clear communication matter more than rushing through a huge syllabus.</p></section>`;
+  h += `<div class="foot"><span>${syncMode==='cloud'?'Progress is saved to your account, so it follows you across devices.':'Progress is saved on this device only.'}</span>${confirmReset?`<span><button class="ghost danger" data-reset-yes>Yes, clear all ticks</button> <button class="ghost" data-reset-no>Cancel</button></span>`:`<button class="ghost" data-reset>Reset progress</button>`}</div>`;
+
+  const y = window.scrollY; document.getElementById('app').innerHTML = h; window.scrollTo(0,y);
+}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.n){ toggle(+b.dataset.n); return; }
+  if(b.dataset.ck!==undefined){ toggleCk(+b.dataset.ck); return; }
+  if(b.dataset.wk!==undefined){ const i=+b.dataset.wk; open.has(i)?open.delete(i):open.add(i); openAll=false; render(); return; }
+  if(b.dataset.expand!==undefined){ openAll=!openAll; render(); return; }
+  if(b.dataset.jump){ const n=+b.dataset.jump, wi=DAYS[n-1].wi; open.add(wi); render(); const el=document.getElementById('day'+n); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  if(b.dataset.reset!==undefined){ confirmReset=true; render(); return; }
+  if(b.dataset.resetNo!==undefined){ confirmReset=false; render(); return; }
+  if(b.dataset.resetYes!==undefined){ state={done:{},ck:{}}; confirmReset=false; render(); queueSave(); return; }
+});
+
+// ---- boot
+open.add(currentWeek());
+const loc = localLoad(); if(loc && loc.done) state = {done:loc.done||{}, ck:loc.ck||{}};
+render();
+(async()=>{
+  try{
+    const [db,user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if(!db||!user) return;
+    const id = await user.id(); if(!id) return;
+    docRef = db.doc('data/users/'+id+'/progress');
+    let first = true, timer = setTimeout(()=>{},0);
+    docRef.onSnapshot(snap=>{
+      if(dirty) return;
+      if(snap.exists){ const d=snap.data(); state={done:d.done||{},ck:d.ck||{}}; localSave(); syncMode='cloud'; render(); }
+      else if(first){ syncMode='cloud'; if(Object.keys(state.done).length||Object.keys(state.ck).length) queueSave(); else render(); }
+      first=false;
+    }, err=>{ syncMode='local'; render(); });
+  }catch(e){}
+})();
+</script>
+
+</body></html>
